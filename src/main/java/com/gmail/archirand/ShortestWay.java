@@ -32,41 +32,27 @@ public class ShortestWay {
     public static ShortestWay find(@NonNull Node start, @NonNull Node finish) {
         childToParent.clear();
         haveToProcess.clear();
+        haveToProcess.add(start);
         start.setCost(0);
-        processGraph(start);
+        processGraph();
         return shortestWay(start, finish);
     }
 
-    private static void processGraph(Node start) {
-        Node node = start;
-        while (existUnprocessedNodes(node)) {
-            List<Edge> edges = node.getEdges();
-            while (existUnprocessedEdges(edges)) {
-                Optional<Edge> optionalEdge = unprocessedShortestEdge(node);
-                if (optionalEdge.isPresent()) {
-                    Edge unprocessedShortestEdge = optionalEdge.get();
-                    List<Node> neighbors = unprocessedShortestEdge.getNodes();
-                    Node parent = node;
-                    neighbors.forEach(neighbour -> {
-                        if (!parent.equals(neighbour)) {
-                            int distanceToNode = calculateDistance(parent, unprocessedShortestEdge);
-                            if (distanceToNode < neighbour.getCost()) {
-                                neighbour.setCost(distanceToNode);
-                                childToParent.put(neighbour, parent);
-                            }
-                            haveToProcess.add(neighbour);
-                        }
-                    });
-                    unprocessedShortestEdge.setProcessed(true);
+    private static void processGraph() {
+        while (existUnprocessedNodes()) {
+            Node node = haveToProcess.poll();
+            if (Objects.nonNull(node)) {
+                List<Edge> edges = node.getEdges();
+                while (existUnprocessedEdges(edges)) {
+                    unprocessedShortestEdge(node).ifPresent(unprocessedShortestEdge -> processEdge(node, unprocessedShortestEdge));
                 }
+                node.setProcessed(true);
             }
-            node.setProcessed(true);
-            node = haveToProcess.poll();
         }
     }
 
-    private static boolean existUnprocessedNodes(Node node) {
-        return Objects.nonNull(node) && !node.isProcessed();
+    private static boolean existUnprocessedNodes() {
+        return !haveToProcess.isEmpty();
     }
 
     private static boolean existUnprocessedEdges(List<Edge> edges) {
@@ -78,6 +64,21 @@ public class ShortestWay {
                 .stream()
                 .filter(edge -> !edge.isProcessed())
                 .min(Comparator.comparing(Edge::getWeight));
+    }
+
+    private static void processEdge(Node node, Edge unprocessedShortestEdge) {
+        List<Node> neighbors = unprocessedShortestEdge.getNodes();
+        neighbors.forEach(neighbour -> {
+            if (!node.equals(neighbour)) {
+                int distanceToNode = calculateDistance(node, unprocessedShortestEdge);
+                if (distanceToNode < neighbour.getCost()) {
+                    neighbour.setCost(distanceToNode);
+                    childToParent.put(neighbour, node);
+                }
+                haveToProcess.add(neighbour);
+            }
+        });
+        unprocessedShortestEdge.setProcessed(true);
     }
 
     private static int calculateDistance(Node parent, Edge edge) {
@@ -104,7 +105,7 @@ public class ShortestWay {
 
     @Override
     public String toString() {
-        if (Objects.isNull(distance) && Objects.isNull(nodesFromStartToFinish)) {
+        if (Objects.isNull(distance)) {
             return "Shortest way not found";
         }
         return "Shortest way from " + start.getName() + " to " + finish.getName() + " is " + distance + ".\n"
