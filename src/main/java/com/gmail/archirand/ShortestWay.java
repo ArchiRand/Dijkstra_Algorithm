@@ -1,12 +1,15 @@
 package main.java.com.gmail.archirand;
 
+import lombok.NonNull;
 import main.java.com.gmail.archirand.model.Edge;
 import main.java.com.gmail.archirand.model.Node;
-import lombok.NonNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+    https://prog-cpp.ru/deikstra/
+ */
 public class ShortestWay {
 
     private Node start;
