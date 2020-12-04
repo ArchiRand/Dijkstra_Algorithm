@@ -1,8 +1,8 @@
-package main.java.com.gmail.archirand;
+package com.gmail.archirand;
 
+import com.gmail.archirand.model.Edge;
+import com.gmail.archirand.model.Node;
 import lombok.NonNull;
-import main.java.com.gmail.archirand.model.Edge;
-import main.java.com.gmail.archirand.model.Node;
 
 import java.util.*;
 import java.util.stream.Collectors;

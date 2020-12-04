@@ -1,7 +1,7 @@
-package main.java.com.gmail.archirand;
+package com.gmail.archirand;
 
-import main.java.com.gmail.archirand.model.Edge;
-import main.java.com.gmail.archirand.model.Node;
+import com.gmail.archirand.model.Edge;
+import com.gmail.archirand.model.Node;
 
 public class Main {
 

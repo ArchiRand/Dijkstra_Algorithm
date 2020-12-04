@@ -1,4 +1,4 @@
-package main.java.com.gmail.archirand.model;
+package com.gmail.archirand.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
